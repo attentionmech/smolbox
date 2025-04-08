@@ -42,10 +42,9 @@ def exec_tool(script: str, *args, **kwargs):
         raise FileNotFoundError(f"Script not found: {script_path}")
 
     kwarg_flags = [f"--{k}={v}" for k, v in kwargs.items()]
-    cmd = ["uv", "run", script_path] + list(args) + kwarg_flags
+    cmd = ["uv", "run", "-q", script_path] + list(args) + kwarg_flags
 
-    print("Executing:", " ".join(cmd))
-    
+    # print("Executing:", " ".join(cmd))
     try:
         subprocess.run(cmd, check=True)
     except subprocess.CalledProcessError as e:
