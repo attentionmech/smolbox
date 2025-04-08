@@ -1,0 +1,21 @@
+[project]
+name = "smolbox"
+version = "0.0.0"
+description = "smolbox"
+authors = [
+  { name="attentionmech", email="attentionmech@email.com" }
+]
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "fire"
+]
+
+[project.scripts]
+smolbox = "smolbox.smolbox:main"
+smox = "smolbox.smolbox:main"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+

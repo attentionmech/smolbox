@@ -1,0 +1,45 @@
+# Python-specific ignores
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments
+venv/
+env/
+.venv/
+.env/
+
+# Build and distribution files
+build/
+dist/
+*.egg-info/
+*.egg
+
+# Dependency directories (if using pipenv or poetry)
+Pipfile.lock
+poetry.lock
+uv.lock
+
+# Editor/IDE files
+.idea/              # PyCharm/IntelliJ
+.vscode/           # Visual Studio Code
+*.sublime-*        # Sublime Text
+
+# OS-generated files
+.DS_Store          # macOS
+Thumbs.db          # Windows
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
+
+# Testing/coverage files
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Local configuration files
+*.local
