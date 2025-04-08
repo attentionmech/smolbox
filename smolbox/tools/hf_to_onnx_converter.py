@@ -12,15 +12,20 @@ from transformers import AutoTokenizer, AutoModel
 import fire
 import os
 
-class HFToONNXConverter:
+class HfToONNXConverter:
     def __init__(
         self,
         model_name_or_path="gpt2",
-        output_dir="onnx_model",
+        output_dir="smolbox_onnx_model",
         task="text-generation",
         opset=14,
         use_auth_token=False
     ):
+        
+        #thow exception if output_dir exists already
+        if os.path.exists(output_dir):
+            raise ValueError(f"Output directory {output_dir} already exists!")
+        
         self.model_name_or_path = model_name_or_path
         self.output_dir = output_dir
         self.task = task
@@ -44,4 +49,4 @@ class HFToONNXConverter:
 
 
 if __name__ == "__main__":
-    fire.Fire(HFToONNXConverter)
+    fire.Fire(HfToONNXConverter)
