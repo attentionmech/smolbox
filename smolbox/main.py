@@ -1,6 +1,7 @@
 import os
 import sys
 import fire
+import shutil
 import subprocess
 
 
@@ -14,13 +15,25 @@ def check_uv():
         sys.exit(1)
 
 
-def run(script: str, **kwargs):
+import os
+import subprocess
+
+# Update TOOLS_DIR to match your project layout
+TOOLS_DIR = "/Users/losh/focus/smolbox/smolbox/tools"
+
+def check_uv():
+    # Dummy check — replace with actual availability test if needed
+    if not shutil.which("uv"):
+        raise RuntimeError("uv is not installed or not in PATH")
+
+def exec_tool(script: str, *args, **kwargs):
     """
     Run a smolbox tool script using uv run.
 
     Args:
         script (str): Script name (e.g., param_tweak_sampler).
-        kwargs: Arguments passed to the script as CLI flags.
+        args: Positional CLI arguments (e.g., subcommands like 'sample').
+        kwargs: Keyword arguments passed as CLI flags (--key=value).
     """
     check_uv()
 
@@ -28,14 +41,17 @@ def run(script: str, **kwargs):
     if not os.path.exists(script_path):
         raise FileNotFoundError(f"Script not found: {script_path}")
 
-    args = [f"--{k}={v}" for k, v in kwargs.items()]
-    cmd = ["uv", "run", script_path] + args
+    kwarg_flags = [f"--{k}={v}" for k, v in kwargs.items()]
+    cmd = ["uv", "run", script_path] + list(args) + kwarg_flags
 
+    print("Executing:", " ".join(cmd))
+    
     try:
-        result = subprocess.run(cmd, check=True, text=True)
+        subprocess.run(cmd, check=True)
     except subprocess.CalledProcessError as e:
-        print(f"Script failed with exit code {e.returncode}")
-        raise SystemExit(e.returncode)
+        print(f"Tool execution failed with code {e.returncode}")
+        sys.exit(1)
+
 
 def list_tools():
     """
@@ -50,7 +66,7 @@ def list_tools():
 
 def main():
     fire.Fire({
-        "run": run,
+        "exec": exec_tool,
         "list": list_tools,
         })
 
