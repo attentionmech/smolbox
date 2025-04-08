@@ -14,7 +14,7 @@ import fire
 class HfZeroOutModel:
     def __init__(
         self,
-        model_name_or_path="gpt2",
+        model_name="gpt2",
         output_dir="smolbox_zeroed_model",
         use_auth_token=False
     ):
@@ -24,7 +24,7 @@ class HfZeroOutModel:
             raise ValueError(f"Output directory {output_dir} already exists!")
         
         
-        self.model_name_or_path = model_name_or_path
+        self.model_name_or_path = model_name
         self.output_dir = output_dir
         self.use_auth_token = use_auth_token
 
