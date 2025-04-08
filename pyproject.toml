@@ -12,8 +12,8 @@ dependencies = [
 ]
 
 [project.scripts]
-smolbox = "smolbox.smolbox:main"
-smox = "smolbox.smolbox:main"
+smolbox = "smolbox.main:main"
+smox = "smolbox.main:main"
 
 [build-system]
 requires = ["setuptools"]
