@@ -10,8 +10,6 @@ from smolbox.core.state_manager import next_state
 # Default directories (can be overridden via CLI)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_TOOLS_DIR = os.path.join(BASE_DIR, "tools")
-DEFAULT_EXP_DIR = os.path.join(BASE_DIR, "experiments")
-
 
 def check_uv():
     """
@@ -35,7 +33,8 @@ def exec_tool(script: str, *args, tools_dir=DEFAULT_TOOLS_DIR, **kwargs):
     Run a tool script from the tools directory using 'uv run'.
 
     Args:
-        script (str): Script name without '.py'.
+        script (str): Path to script inside tools_dir, without '.py'.
+                      e.g., 'subdir/myscript' maps to tools_dir/subdir/myscript.py
         args: Positional CLI arguments.
         tools_dir (str): Override tools directory.
         kwargs: Keyword arguments passed as CLI flags (--key=value).
@@ -58,51 +57,17 @@ def exec_tool(script: str, *args, tools_dir=DEFAULT_TOOLS_DIR, **kwargs):
         sys.exit(1)
 
 
+
 def list_tools(tools_dir=DEFAULT_TOOLS_DIR):
     """
-    Print all available tools in the tools directory.
+    Print all available tools in the tools directory and subdirectories.
     """
     print("> Available tools:")
-    for fname in os.listdir(tools_dir):
-        if fname.endswith(".py") and not fname.startswith("_"):
-            print(f"  - {fname.removesuffix('.py')}")
-
-
-def exec_experiments(script: str, *args, exp_dir=DEFAULT_EXP_DIR, **kwargs):
-    """
-    Run an experiment script from the experiments directory using 'uv run'.
-
-    Args:
-        script (str): Script name without '.py'.
-        args: Positional CLI arguments.
-        exp_dir (str): Override experiments directory.
-        kwargs: Keyword arguments passed as CLI flags (--key=value).
-    """
-    check_uv()
-
-    script_path = os.path.join(exp_dir, f"{script}.py")
-    if not os.path.exists(script_path):
-        raise FileNotFoundError(f"Script not found: {script_path}")
-
-    kwarg_flags = [f"--{k}={v}" for k, v in kwargs.items()]
-    cmd = ["uv", "run", "-q", script_path] + list(args) + kwarg_flags
-
-    try:
-        subprocess.run(cmd, check=True)
-    except subprocess.CalledProcessError as e:
-        print(f"Experiment execution failed with code {e.returncode}")
-        sys.exit(1)
-
-
-def list_experiments(exp_dir=DEFAULT_EXP_DIR):
-    """
-    Print all available experiment scripts in the experiments directory.
-    """
-    print("> Available experiments:")
-    for fname in os.listdir(exp_dir):
-        if fname.endswith(".py") and not fname.startswith("_"):
-            print(f"  - {fname.removesuffix('.py')}")
-
+    for root, _, files in os.walk(tools_dir):
+        for fname in files:
+            if fname.endswith(".py") and not fname.startswith("_"):
+                rel_path = os.path.relpath(os.path.join(root, fname), tools_dir)
+                print(f"  - {rel_path.removesuffix('.py')}")
 
 def main():
     fire.Fire(
