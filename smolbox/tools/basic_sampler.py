@@ -14,7 +14,7 @@ import fire
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-from smolbox.core.commons import AUTORESOLVE, resolve
+from smolbox.core.state_manager import AUTORESOLVE, resolve
 
 # plain old sampler
 
@@ -22,7 +22,7 @@ class BasicSampler:
     def __init__(
         self,
         model_path=AUTORESOLVE,
-        prompt="Hello, my name is",
+        prompt="Once upon a time",
         max_new_tokens=50,
         do_sample=True,
         temperature=0.8,
