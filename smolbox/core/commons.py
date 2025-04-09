@@ -61,9 +61,10 @@ def update_state(updates: dict):
 
 
 def resolve(key_name, key_value, write=False):
+    dikt = get_current_state()
+
     if key_value != AUTORESOLVE:
         if key_value:
-            dikt = get_current_state()
             dikt[key_name] = key_value
             save_current_state(dikt)
         return key_value
@@ -71,8 +72,6 @@ def resolve(key_name, key_value, write=False):
     if key_name not in ALLOWED_KEYS:
         print(f"Invalid key name: {key_name} for state.")
         raise ValueError("Invalid key name for state. Allowed keys are: " + ", ".join(ALLOWED_KEYS))
-
-    dikt = get_current_state()
 
     if not write:
         if key_name in dikt and dikt[key_name] is not None:
@@ -100,8 +99,7 @@ def resolve(key_name, key_value, write=False):
 def next_state():
     current_state = get_current_state()
     commit_history(current_state)  # Save snapshot before mutation
-
-    current_state["model_path"] = current_state.get("output_model_path", current_state["model_path"])
+    current_state["model_path"] = current_state["output_model_path"] or current_state["model_path"]
     current_state["output_model_path"] = None
 
     current_state["updated_at"] = now()

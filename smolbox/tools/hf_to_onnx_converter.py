@@ -13,37 +13,42 @@ from transformers import AutoTokenizer, AutoModel
 import fire
 import os
 
+from smolbox.core.commons import AUTORESOLVE, resolve
+
+
 class HfToONNXConverter:
     def __init__(
         self,
-        model_path="gpt2",
-        output_dir="smolbox_onnx_model",
+        model_path=AUTORESOLVE,
+        output_model_path=AUTORESOLVE,
         task="text-generation",
         opset=14,
     ):
         
         #thow exception if output_dir exists already
-        if os.path.exists(output_dir):
-            raise ValueError(f"Output directory {output_dir} already exists!")
+        if os.path.exists(output_model_path):
+            raise ValueError(f"Output directory {output_model_path} already exists!")
         
-        self.model_path = model_path
-        self.output_dir = output_dir
+        self.model_path = resolve("model_path", model_path)
+        self.output_model_path = resolve("output_model_path", output_model_path, write=True)
+        print("output_model_path: ", self.output_model_path)
+        
         self.task = task
         self.opset = opset
 
     def run(self):
-        if not os.path.exists(self.output_dir):
-            os.makedirs(self.output_dir)
+        if not os.path.exists(self.output_model_path):
+            os.makedirs(self.output_model_path)
 
         main_export(
             model_name_or_path=self.model_path,
-            output=self.output_dir,
+            output=self.output_model_path,
             task=self.task,
             opset=self.opset,
             tokenizer=self.model_path,
         )
 
-        return f"Export complete. ONNX model saved to: {self.output_dir}"
+        return f"Export complete. ONNX model saved to: {self.output_model_path}"
 
 
 if __name__ == "__main__":

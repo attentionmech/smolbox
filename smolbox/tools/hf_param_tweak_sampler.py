@@ -12,10 +12,13 @@ import torch
 import copy
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import fire
+from smolbox.core.commons import AUTORESOLVE, resolve
+
+
 
 class ParamTweakSampler:
-    def __init__(self, model_path="gpt2",  prompt="Once upon a time", deltas="", temperature=0.6, max_length=100):
-        self.model_path = model_path
+    def __init__(self, model_path=AUTORESOLVE,  prompt="Once upon a time", deltas="", temperature=0.6, max_length=100):
+        self.model_path = resolve("model_path", model_path)
         self.prompt = prompt
         self.deltas = deltas
         self.temperature = temperature
