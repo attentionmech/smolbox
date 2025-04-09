@@ -59,7 +59,12 @@ class ModelTweakSampler:
         if self._model is None:
             self._load_model()
 
-        return "\n".join(sorted(list(self._model.state_dict().keys())))
+        lines = []
+        for name, param in self._model.named_parameters():
+            shape = tuple(param.shape)
+            total = param.numel()
+            lines.append(f"{name:<60} shape={shape:<20} total={total}")
+        return "\n".join(lines)
 
 
     def _apply_deltas(self, deltas):
