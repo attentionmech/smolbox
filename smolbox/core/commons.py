@@ -1,7 +1,7 @@
-import os
 import json
-from uuid import uuid4
+import os
 from datetime import datetime
+from uuid import uuid4
 
 AUTORESOLVE = "<AUTO>"
 
@@ -71,7 +71,9 @@ def resolve(key_name, key_value, write=False):
 
     if key_name not in ALLOWED_KEYS:
         print(f"Invalid key name: {key_name} for state.")
-        raise ValueError("Invalid key name for state. Allowed keys are: " + ", ".join(ALLOWED_KEYS))
+        raise ValueError(
+            "Invalid key name for state. Allowed keys are: " + ", ".join(ALLOWED_KEYS)
+        )
 
     if not write:
         if key_name in dikt and dikt[key_name] is not None:
@@ -99,7 +101,9 @@ def resolve(key_name, key_value, write=False):
 def next_state():
     current_state = get_current_state()
     commit_history(current_state)  # Save snapshot before mutation
-    current_state["model_path"] = current_state.get("output_model_path") or current_state.get("model_path")
+    current_state["model_path"] = current_state.get(
+        "output_model_path"
+    ) or current_state.get("model_path")
     current_state["output_model_path"] = None
 
     current_state["updated_at"] = now()

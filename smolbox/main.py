@@ -1,10 +1,11 @@
 import os
-import sys
-import fire
 import shutil
 import subprocess
-from smolbox.core.commons import next_state
+import sys
 
+import fire
+
+from smolbox.core.commons import next_state
 
 TOOLS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tools")
 EXP_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "experiments")
@@ -16,7 +17,12 @@ def check_uv():
     Exits the program if 'uv --version' fails.
     """
     try:
-        _ = subprocess.run(["uv", "--version"], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        _ = subprocess.run(
+            ["uv", "--version"],
+            check=True,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
     except:
         print("Ensure uv is working properly! (uv --version) failed")
         sys.exit(1)
@@ -96,12 +102,14 @@ def list_experiments():
 
 
 def main():
-    fire.Fire({
-        "use": exec_tool,
-        "ls": list_tools,
-        "use-exp": exec_experiments,  # <- was calling exec_tool before, fixed
-        "ls-exp": list_experiments,  # <- was calling list_tools before, fixed
-    })
+    fire.Fire(
+        {
+            "use": exec_tool,
+            "ls": list_tools,
+            "use-exp": exec_experiments,  # <- was calling exec_tool before, fixed
+            "ls-exp": list_experiments,  # <- was calling list_tools before, fixed
+        }
+    )
 
 
 if __name__ == "__main__":

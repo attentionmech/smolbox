@@ -10,13 +10,15 @@
 
 import os
 import re
+
+import fire
 import torch
 from transformers import AutoModel, AutoTokenizer
-import fire
+
 from smolbox.core.commons import AUTORESOLVE, resolve
 
+# model_path can refer to both hf or local path..
 
-# model_path can refer to both hf or local path.. 
 
 class EditParameters:
     def __init__(
@@ -26,13 +28,13 @@ class EditParameters:
         reset_type="zero",  # options: 'zero', 'random'
         param_pattern=".*",  # regex pattern to match parameter names
     ):
-        
+
         model_path = resolve("model_path", model_path)
         output_model_path = resolve("output_model_path", output_model_path, write=True)
-        
+
         print(f"Model path: {model_path}")
         print(f"Output path: {output_model_path}")
-        
+
         if os.path.exists(output_model_path) and os.listdir(output_model_path):
             print(f"WARNING: Output directory {output_model_path} is non empty.")
 
@@ -42,7 +44,9 @@ class EditParameters:
         self.param_pattern = param_pattern
 
     def _reset_parameters(self, model):
-        print(f"Resetting parameters with type: {self.reset_type}, pattern: '{self.param_pattern}'")
+        print(
+            f"Resetting parameters with type: {self.reset_type}, pattern: '{self.param_pattern}'"
+        )
         pattern = re.compile(self.param_pattern)
 
         for name, param in model.named_parameters():
@@ -76,7 +80,6 @@ class EditParameters:
         tokenizer.save_pretrained(self.output_path)
 
         return f"Model reset ({self.reset_type}) and saved to {self.output_path}"
-
 
 
 if __name__ == "__main__":

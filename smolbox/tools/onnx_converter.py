@@ -8,10 +8,11 @@
 # ]
 # ///
 
-from optimum.exporters.onnx import main_export
-from transformers import AutoTokenizer, AutoModel
-import fire
 import os
+
+import fire
+from optimum.exporters.onnx import main_export
+from transformers import AutoModel, AutoTokenizer
 
 from smolbox.core.commons import AUTORESOLVE, resolve
 
@@ -24,15 +25,17 @@ class HfToONNXConverter:
         task="text-generation",
         opset=14,
     ):
-        
-        #thow exception if output_dir exists already
+
+        # thow exception if output_dir exists already
         if os.path.exists(output_model_path):
             raise ValueError(f"Output directory {output_model_path} already exists!")
-        
+
         self.model_path = resolve("model_path", model_path)
-        self.output_model_path = resolve("output_model_path", output_model_path, write=True)
+        self.output_model_path = resolve(
+            "output_model_path", output_model_path, write=True
+        )
         print("output_model_path: ", self.output_model_path)
-        
+
         self.task = task
         self.opset = opset
 

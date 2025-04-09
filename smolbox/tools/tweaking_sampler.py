@@ -8,31 +8,40 @@
 # ]
 # ///
 
-import torch
 import copy
-from transformers import AutoTokenizer, AutoModelForCausalLM
+
 import fire
+import torch
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
 from smolbox.core.commons import AUTORESOLVE, resolve
 
 
-
 class ParamTweakSampler:
-    def __init__(self, model_path=AUTORESOLVE,  prompt="Once upon a time", deltas="", temperature=0.6, max_length=100):
+    def __init__(
+        self,
+        model_path=AUTORESOLVE,
+        prompt="Once upon a time",
+        deltas="",
+        temperature=0.6,
+        max_length=100,
+    ):
         self.model_path = resolve("model_path", model_path)
         self.prompt = prompt
         self.deltas = deltas
         self.temperature = temperature
         self.max_length = max_length
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
-        
-        
+
         self._model = None
         self._tokenizer = None
         self._original_state_dict = None
 
     def _load_model(self):
         self._tokenizer = AutoTokenizer.from_pretrained(self.model_path)
-        self._model = AutoModelForCausalLM.from_pretrained(self.model_path).to(self.device)
+        self._model = AutoModelForCausalLM.from_pretrained(self.model_path).to(
+            self.device
+        )
         self._original_state_dict = copy.deepcopy(self._model.state_dict())
 
     def _parse_deltas(self, deltas_str):
@@ -63,13 +72,11 @@ class ParamTweakSampler:
             max_length=self.max_length,
             temperature=self.temperature,
             top_k=50,
-            do_sample=True
+            do_sample=True,
         )
 
         return self._tokenizer.decode(output[0], skip_special_tokens=True)
 
 
-
 if __name__ == "__main__":
     fire.Fire(ParamTweakSampler)
-

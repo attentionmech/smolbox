@@ -8,12 +8,14 @@
 # ]
 # ///
 
-import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer
-import fire
 import os
 
-from smolbox.core.commons  import AUTORESOLVE, resolve
+import fire
+import torch
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+from smolbox.core.commons import AUTORESOLVE, resolve
+
 
 class Inference:
     def __init__(

@@ -8,27 +8,36 @@
 # ]
 # ///
 
+import time
+
+import fire
+import numpy as np
 import pygame
 import torch
-from transformers import GPT2LMHeadModel, GPT2Tokenizer
 import torch.nn.functional as F
-import time
-import numpy as np
-import fire
+from transformers import GPT2LMHeadModel, GPT2Tokenizer
+
 
 class TokenAttributionVisualizer:
-    def __init__(self, model_path="gpt2", prompt="Once upon a time ", step_delay=0.1, width=500, height=360):
+    def __init__(
+        self,
+        model_path="gpt2",
+        prompt="Once upon a time ",
+        step_delay=0.1,
+        width=500,
+        height=360,
+    ):
         self.model_path = model_path
         self.prompt = prompt
         self.step_delay = step_delay
         self.width = width
         self.height = height
-        
+
         # Config constants
         self._font_size = 20
         self._margin = 10
         self._legend_height = 20
-        
+
         self._model = None
         self._tokenizer = None
         self._screen = None
@@ -103,13 +112,25 @@ class TokenAttributionVisualizer:
         for i in range(100):
             norm_val = i / 99
             color = self._attribution_to_color(norm_val)
-            pygame.draw.rect(self._screen, color, 
-                           pygame.Rect(self._margin + i*8, self.height - self._legend_height, 8, 20))
+            pygame.draw.rect(
+                self._screen,
+                color,
+                pygame.Rect(
+                    self._margin + i * 8, self.height - self._legend_height, 8, 20
+                ),
+            )
         min_label = self._small_font.render("Low Influence", True, (255, 255, 255))
         max_label = self._small_font.render("High Influence", True, (255, 255, 255))
-        self._screen.blit(min_label, (self._margin, self.height - self._legend_height + 22))
-        self._screen.blit(max_label, (self.width - self._margin - max_label.get_width(), 
-                                    self.height - self._legend_height + 22))
+        self._screen.blit(
+            min_label, (self._margin, self.height - self._legend_height + 22)
+        )
+        self._screen.blit(
+            max_label,
+            (
+                self.width - self._margin - max_label.get_width(),
+                self.height - self._legend_height + 22,
+            ),
+        )
 
     def _draw_screen(self, prompt_tokens, attributions):
         """Render the current state to the screen"""
@@ -118,13 +139,17 @@ class TokenAttributionVisualizer:
         if attributions:
             max_val = max(attributions)
             min_val = min(attributions)
-            norm_attr = [(a - min_val) / (max_val - min_val + 1e-6) for a in attributions]
+            norm_attr = [
+                (a - min_val) / (max_val - min_val + 1e-6) for a in attributions
+            ]
             colors = [self._attribution_to_color(a) for a in norm_attr]
         else:
             colors = [(255, 255, 255)] * len(prompt_tokens)
             norm_attr = [0.0] * len(prompt_tokens)
 
-        lines = self._wrap_tokens(prompt_tokens, colors, norm_attr, self.width - 2 * self._margin)
+        lines = self._wrap_tokens(
+            prompt_tokens, colors, norm_attr, self.width - 2 * self._margin
+        )
         y = self._margin
         for line in lines:
             x = self._margin
@@ -143,14 +168,20 @@ class TokenAttributionVisualizer:
         """Main execution loop"""
         self._load_model()
         self._init_pygame()
-        
+
         prompt_ids = self._tokenizer.encode(self.prompt)
         tokens_so_far = self._tokenizer.convert_ids_to_tokens(prompt_ids)
 
         while self._running:
             input_ids = torch.tensor([prompt_ids])
-            attributions = self._get_attention_attribution(input_ids) if len(prompt_ids) > 1 else []
-            tokens_display = [self._tokenizer.convert_tokens_to_string([t]) for t in tokens_so_far]
+            attributions = (
+                self._get_attention_attribution(input_ids)
+                if len(prompt_ids) > 1
+                else []
+            )
+            tokens_display = [
+                self._tokenizer.convert_tokens_to_string([t]) for t in tokens_so_far
+            ]
             self._draw_screen(tokens_display, attributions)
 
             for event in pygame.event.get():
@@ -165,6 +196,7 @@ class TokenAttributionVisualizer:
             time.sleep(self.step_delay)
 
         pygame.quit()
+
 
 if __name__ == "__main__":
     fire.Fire(TokenAttributionVisualizer)
