@@ -97,10 +97,10 @@ def list_experiments():
 
 def main():
     fire.Fire({
-        "run-tool": exec_tool,
-        "list-tools": list_tools,
-        "run-experiment": exec_experiments,  # <- was calling exec_tool before, fixed
-        "list-experiments": list_experiments,  # <- was calling list_tools before, fixed
+        "run": exec_tool,
+        "ls": list_tools,
+        "run-exp": exec_experiments,  # <- was calling exec_tool before, fixed
+        "ls-exp": list_experiments,  # <- was calling list_tools before, fixed
     })
 
 
