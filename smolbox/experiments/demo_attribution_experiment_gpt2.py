@@ -17,8 +17,8 @@ import numpy as np
 import fire
 
 class TokenAttributionVisualizer:
-    def __init__(self, model_name="gpt2", prompt="Once upon a time ", step_delay=0.1, width=500, height=360):
-        self.model_name = model_name
+    def __init__(self, model_path="gpt2", prompt="Once upon a time ", step_delay=0.1, width=500, height=360):
+        self.model_path = model_path
         self.prompt = prompt
         self.step_delay = step_delay
         self.width = width
@@ -38,8 +38,8 @@ class TokenAttributionVisualizer:
 
     def _load_model(self):
         """Initialize tokenizer and model"""
-        self._tokenizer = GPT2Tokenizer.from_pretrained(self.model_name)
-        self._model = GPT2LMHeadModel.from_pretrained(self.model_name)
+        self._tokenizer = GPT2Tokenizer.from_pretrained(self.model_path)
+        self._model = GPT2LMHeadModel.from_pretrained(self.model_path)
         self._model.eval()
 
     def _init_pygame(self):

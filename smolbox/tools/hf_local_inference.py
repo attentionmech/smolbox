@@ -38,13 +38,13 @@ class HfLocalInference:
 
     def run(self):
 
-        print(f"Loading model from: {self.model_path}")
+        # print(f"Loading model from: {self.model_path}")
         tokenizer = AutoTokenizer.from_pretrained(self.model_path)
         model = AutoModelForCausalLM.from_pretrained(self.model_path)
         model.to(self.device)
         model.eval()
 
-        print(f"Running inference on prompt: {self.prompt}")
+        # print(f"Running inference on prompt: {self.prompt}")
         inputs = tokenizer(self.prompt, return_tensors="pt").to(self.device)
         with torch.no_grad():
             output = model.generate(

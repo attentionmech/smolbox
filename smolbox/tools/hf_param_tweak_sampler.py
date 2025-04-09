@@ -14,8 +14,8 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 import fire
 
 class ParamTweakSampler:
-    def __init__(self, model_name="gpt2",  prompt="Once upon a time", deltas="", temperature=0.6, max_length=100):
-        self.model_name = model_name
+    def __init__(self, model_path="gpt2",  prompt="Once upon a time", deltas="", temperature=0.6, max_length=100):
+        self.model_path = model_path
         self.prompt = prompt
         self.deltas = deltas
         self.temperature = temperature
@@ -28,8 +28,8 @@ class ParamTweakSampler:
         self._original_state_dict = None
 
     def _load_model(self):
-        self._tokenizer = AutoTokenizer.from_pretrained(self.model_name)
-        self._model = AutoModelForCausalLM.from_pretrained(self.model_name).to(self.device)
+        self._tokenizer = AutoTokenizer.from_pretrained(self.model_path)
+        self._model = AutoModelForCausalLM.from_pretrained(self.model_path).to(self.device)
         self._original_state_dict = copy.deepcopy(self._model.state_dict())
 
     def _parse_deltas(self, deltas_str):

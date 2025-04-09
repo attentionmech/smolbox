@@ -16,7 +16,7 @@ import os
 class HfToONNXConverter:
     def __init__(
         self,
-        model_name_or_path="gpt2",
+        model_path="gpt2",
         output_dir="smolbox_onnx_model",
         task="text-generation",
         opset=14,
@@ -26,7 +26,7 @@ class HfToONNXConverter:
         if os.path.exists(output_dir):
             raise ValueError(f"Output directory {output_dir} already exists!")
         
-        self.model_name_or_path = model_name_or_path
+        self.model_path = model_path
         self.output_dir = output_dir
         self.task = task
         self.opset = opset
@@ -36,11 +36,11 @@ class HfToONNXConverter:
             os.makedirs(self.output_dir)
 
         main_export(
-            model_name_or_path=self.model_name_or_path,
+            model_name_or_path=self.model_path,
             output=self.output_dir,
             task=self.task,
             opset=self.opset,
-            tokenizer=self.model_name_or_path,
+            tokenizer=self.model_path,
         )
 
         return f"Export complete. ONNX model saved to: {self.output_dir}"

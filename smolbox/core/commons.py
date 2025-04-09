@@ -5,7 +5,7 @@ from datetime import datetime
 
 AUTORESOLVE = "<AUTO>"
 
-ALLOWED_KEYS = ["model_path", "model_name", "output_model_path", "output_model_name"]
+ALLOWED_KEYS = ["model_path", "output_model_path"]
 WRITABLE_KEYS = ["output_model_path"]
 
 SMOLBOX_DIR = os.path.join(os.getcwd(), ".smolbox")
@@ -101,10 +101,8 @@ def next_state():
     current_state = get_current_state()
     commit_history(current_state)  # Save snapshot before mutation
 
-    current_state["model_path"] = current_state.get("output_model_path")
-    current_state["model_name"] = current_state.get("output_model_name")
+    current_state["model_path"] = current_state.get("output_model_path", current_state["model_path"])
     current_state["output_model_path"] = None
-    current_state["output_model_name"] = None
 
     current_state["updated_at"] = now()
 
