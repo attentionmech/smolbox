@@ -18,6 +18,7 @@ from datasets import load_dataset
 
 from smolbox.core.state_manager import AUTORESOLVE, resolve
 
+
 class ModelFineTuner:
     def __init__(
         self,
@@ -31,7 +32,7 @@ class ModelFineTuner:
     ):
         """
         Fine-tune a model on a dataset.
-        
+
         Args:
             model_path: Path to the model to fine-tune (local or HF hub)
             dataset_path: Path to the dataset (HF dataset name or local path)
@@ -81,7 +82,9 @@ class ModelFineTuner:
         tokenized_dataset = dataset.map(
             tokenize_function,
             batched=True,
-            remove_columns=[col for col in dataset["train"].column_names if col != "text"],
+            remove_columns=[
+                col for col in dataset["train"].column_names if col != "text"
+            ],
         )
 
         # For causal LM, we need input_ids as labels (shifted by the model)

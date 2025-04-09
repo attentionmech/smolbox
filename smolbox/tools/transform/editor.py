@@ -21,6 +21,7 @@ from smolbox.core.state_manager import AUTORESOLVE, resolve
 
 #
 
+
 class ModelParamEditor:
     def __init__(
         self,

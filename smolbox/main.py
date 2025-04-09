@@ -43,7 +43,7 @@ def exec_tool(script: str, *args, tools_dir=DEFAULT_TOOLS_DIR, **kwargs):
     check_uv()
 
     script_path = os.path.join(tools_dir, f"{script}.py")
-    
+
     if not os.path.exists(script_path):
         raise FileNotFoundError(f"Script not found: {script_path}")
 
@@ -107,10 +107,8 @@ def list_experiments(exp_dir=DEFAULT_EXP_DIR):
 def main():
     fire.Fire(
         {
-            "use": exec_tool,
+            "run": exec_tool,
             "ls": list_tools,
-            "run-x": exec_experiments,
-            "list-x": list_experiments,
         }
     )
 

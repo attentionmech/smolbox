@@ -18,6 +18,7 @@ from smolbox.core.state_manager import AUTORESOLVE, resolve
 
 # plain old sampler
 
+
 class BasicSampler:
     def __init__(
         self,

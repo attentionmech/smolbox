@@ -16,6 +16,7 @@ from transformers import AutoConfig, AutoModel, AutoTokenizer
 
 from smolbox.core.state_manager import AUTORESOLVE, resolve
 
+
 class ModelFromConfigInitializer:
     def __init__(
         self,
@@ -25,7 +26,7 @@ class ModelFromConfigInitializer:
     ):
         """
         Create a new model instance from an existing model's configuration.
-        
+
         Args:
             model_path: Path to the existing model (local or HF hub) to get config from
             output_model_path: Where to save the new model
@@ -52,18 +53,28 @@ class ModelFromConfigInitializer:
         # Optionally override the number of layers
         if self.num_layers is not None:
             if hasattr(config, "n_layer"):  # For GPT-style models
-                print(f"Overriding number of layers from {config.n_layer} to {self.num_layers}")
+                print(
+                    f"Overriding number of layers from {config.n_layer} to {self.num_layers}"
+                )
                 config.n_layer = self.num_layers
             elif hasattr(config, "num_hidden_layers"):  # For BERT-style models
-                print(f"Overriding number of layers from {config.num_hidden_layers} to {self.num_layers}")
+                print(
+                    f"Overriding number of layers from {config.num_hidden_layers} to {self.num_layers}"
+                )
                 config.num_hidden_layers = self.num_layers
             else:
-                print("Warning: Config does not have a recognizable layer count attribute")
+                print(
+                    "Warning: Config does not have a recognizable layer count attribute"
+                )
 
         print("Creating new model instance with configuration:")
         print(f"  Model type: {config.model_type}")
-        print(f"  Layers: {self.num_layers if self.num_layers is not None else 'unchanged'}")
-        print(f"  Hidden size: {config.hidden_size if hasattr(config, 'hidden_size') else 'N/A'}")
+        print(
+            f"  Layers: {self.num_layers if self.num_layers is not None else 'unchanged'}"
+        )
+        print(
+            f"  Hidden size: {config.hidden_size if hasattr(config, 'hidden_size') else 'N/A'}"
+        )
 
         # Create a new model instance with the config
         model = AutoModel.from_config(config)

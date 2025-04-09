@@ -19,6 +19,7 @@ from smolbox.core.state_manager import AUTORESOLVE, resolve
 
 # doesn't modify the model, just supports sample time tweaks
 
+
 class ModelTweakSampler:
     def __init__(
         self,
@@ -65,7 +66,6 @@ class ModelTweakSampler:
             total = param.numel()
             lines.append(f"{name:<60} shape={shape:<20} total={total}")
         return "\n".join(lines)
-
 
     def _apply_deltas(self, deltas):
         with torch.no_grad():
