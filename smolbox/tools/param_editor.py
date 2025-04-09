@@ -4,13 +4,12 @@
 #   "transformers",
 #   "fire",
 #   "torch",
-#   "smolbox@/Users/losh/focus/smolbox"
+#   "smolbox@git+https://github.com/attentionmech/smolbox",
 # ]
 # ///
 
 import os
 import re
-import shutil
 import torch
 from transformers import AutoModel, AutoTokenizer
 import fire
@@ -19,7 +18,7 @@ from smolbox.core.commons import AUTORESOLVE, resolve
 
 # model_path can refer to both hf or local path.. 
 
-class HfModelResetter:
+class EditParameters:
     def __init__(
         self,
         model_path=AUTORESOLVE,
@@ -81,6 +80,6 @@ class HfModelResetter:
 
 
 if __name__ == "__main__":
-    fire.Fire(HfModelResetter)
+    fire.Fire(EditParameters)
     # Uncomment to run test directly
     # test_hf_model_resetter()

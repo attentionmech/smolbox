@@ -99,7 +99,7 @@ def resolve(key_name, key_value, write=False):
 def next_state():
     current_state = get_current_state()
     commit_history(current_state)  # Save snapshot before mutation
-    current_state["model_path"] = current_state["output_model_path"] or current_state["model_path"]
+    current_state["model_path"] = current_state.get("output_model_path") or current_state.get("model_path")
     current_state["output_model_path"] = None
 
     current_state["updated_at"] = now()

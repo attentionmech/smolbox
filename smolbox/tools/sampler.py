@@ -4,7 +4,7 @@
 #   "transformers",
 #   "torch",
 #   "fire",
-#   "smolbox@/Users/losh/focus/smolbox",
+#   "smolbox@git+https://github.com/attentionmech/smolbox",
 # ]
 # ///
 
