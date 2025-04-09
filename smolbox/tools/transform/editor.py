@@ -16,13 +16,14 @@ import torch
 from transformers import AutoModel, AutoTokenizer
 
 from smolbox.core.state_manager import AUTORESOLVE, resolve
+from smolbox.core.base_tool import BaseTool
 
 # model_path can refer to both hf or local path..
 
 #
 
 
-class ModelParamEditor:
+class ModelParamEditor(BaseTool):
     def __init__(
         self,
         model_path=AUTORESOLVE,

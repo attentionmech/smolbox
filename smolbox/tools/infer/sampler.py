@@ -15,11 +15,12 @@ import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from smolbox.core.state_manager import AUTORESOLVE, resolve
+from smolbox.core.base_tool import BaseTool
 
 # plain old sampler
 
 
-class BasicSampler:
+class BasicSampler(BaseTool):
     def __init__(
         self,
         model_path=AUTORESOLVE,

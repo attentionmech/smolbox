@@ -17,9 +17,11 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, Trainer, TrainingA
 from datasets import load_dataset
 
 from smolbox.core.state_manager import AUTORESOLVE, resolve
+from smolbox.core.base_tool import BaseTool
 
 
-class ModelFineTuner:
+
+class ModelFineTuner(BaseTool):
     def __init__(
         self,
         model_path: str = AUTORESOLVE,
