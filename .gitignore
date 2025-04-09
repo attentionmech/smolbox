@@ -43,3 +43,5 @@ htmlcov/
 
 # Local configuration files
 *.local
+
+.smolbox

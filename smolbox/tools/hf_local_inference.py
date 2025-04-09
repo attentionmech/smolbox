@@ -4,6 +4,7 @@
 #   "transformers",
 #   "torch",
 #   "fire",
+#   "smolbox@/Users/losh/focus/smolbox",
 # ]
 # ///
 
@@ -12,10 +13,12 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 import fire
 import os
 
+from smolbox.core.commons  import AUTORESOLVE, resolve
+
 class HfLocalInference:
     def __init__(
         self,
-        model_dir="model_dir",
+        model_path=AUTORESOLVE,
         prompt="Hello, my name is",
         max_new_tokens=50,
         do_sample=True,
@@ -24,7 +27,7 @@ class HfLocalInference:
         top_p=0.95,
         device=None,
     ):
-        self.model_dir = model_dir
+        self.model_path = resolve("model_path", model_path)
         self.prompt = prompt
         self.max_new_tokens = max_new_tokens
         self.do_sample = do_sample
@@ -33,13 +36,11 @@ class HfLocalInference:
         self.top_p = top_p
         self.device = device or ("cuda" if torch.cuda.is_available() else "cpu")
 
-    def sample(self):
-        if not os.path.exists(self.model_dir):
-            raise FileNotFoundError(f"Model directory not found: {self.model_dir}")
+    def run(self):
 
-        print(f"Loading model from: {self.model_dir}")
-        tokenizer = AutoTokenizer.from_pretrained(self.model_dir)
-        model = AutoModelForCausalLM.from_pretrained(self.model_dir)
+        print(f"Loading model from: {self.model_path}")
+        tokenizer = AutoTokenizer.from_pretrained(self.model_path)
+        model = AutoModelForCausalLM.from_pretrained(self.model_path)
         model.to(self.device)
         model.eval()
 
@@ -57,8 +58,8 @@ class HfLocalInference:
             )
 
         decoded = tokenizer.decode(output[0], skip_special_tokens=True)
-        print("\n=== Output ===")
-        print(decoded)
+        # print("\n=== Output ===")
+        # print(decoded)
         return decoded
 
 

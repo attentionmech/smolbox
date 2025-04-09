@@ -3,6 +3,8 @@ import sys
 import fire
 import shutil
 import subprocess
+from smolbox.core.commons import next_state
+
 
 TOOLS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tools")
 EXP_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "experiments")
@@ -40,6 +42,7 @@ def exec_tool(script: str, *args, **kwargs):
 
     try:
         subprocess.run(cmd, check=True)
+        next_state()
     except subprocess.CalledProcessError as e:
         print(f"Tool execution failed with code {e.returncode}")
         sys.exit(1)

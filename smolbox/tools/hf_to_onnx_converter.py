@@ -4,6 +4,7 @@
 #   "transformers",
 #   "optimum[onnxruntime]",
 #   "fire",
+#   "smolbox@/Users/losh/focus/smolbox",
 # ]
 # ///
 
@@ -19,7 +20,6 @@ class HfToONNXConverter:
         output_dir="smolbox_onnx_model",
         task="text-generation",
         opset=14,
-        use_auth_token=False
     ):
         
         #thow exception if output_dir exists already
@@ -30,9 +30,8 @@ class HfToONNXConverter:
         self.output_dir = output_dir
         self.task = task
         self.opset = opset
-        self.use_auth_token = use_auth_token
 
-    def convert(self):
+    def run(self):
         if not os.path.exists(self.output_dir):
             os.makedirs(self.output_dir)
 
@@ -42,7 +41,6 @@ class HfToONNXConverter:
             task=self.task,
             opset=self.opset,
             tokenizer=self.model_name_or_path,
-            use_auth_token=self.use_auth_token
         )
 
         return f"Export complete. ONNX model saved to: {self.output_dir}"

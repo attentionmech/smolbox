@@ -4,6 +4,7 @@
 #   "torch",
 #   "fire",
 #   "transformers",
+#   "smolbox@/Users/losh/focus/smolbox",
 # ]
 # ///
 
@@ -46,7 +47,7 @@ class ParamTweakSampler:
                 if name in deltas:
                     param += deltas[name]
 
-    def sample(self):
+    def run(self):
         self._load_model()
         self._model.load_state_dict(copy.deepcopy(self._original_state_dict))
         self._apply_deltas(self._parse_deltas(self.deltas))
