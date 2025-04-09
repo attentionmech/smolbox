@@ -17,7 +17,9 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 from smolbox.core.commons import AUTORESOLVE, resolve
 
 
-class ParamTweakSampler:
+# doesn't modify the model, just supports sample time tweaks
+
+class ModelTweakSampler:
     def __init__(
         self,
         model_path=AUTORESOLVE,
@@ -53,6 +55,13 @@ class ParamTweakSampler:
                     deltas[k.strip()] = float(v.strip())
         return deltas
 
+    def list(self):
+        if self._model is None:
+            self._load_model()
+
+        return "\n".join(sorted(list(self._model.state_dict().keys())))
+
+
     def _apply_deltas(self, deltas):
         with torch.no_grad():
             for name, param in self._model.named_parameters():
@@ -79,4 +88,4 @@ class ParamTweakSampler:
 
 
 if __name__ == "__main__":
-    fire.Fire(ParamTweakSampler)
+    fire.Fire(ModelTweakSampler)

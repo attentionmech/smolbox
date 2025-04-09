@@ -19,8 +19,9 @@ from smolbox.core.commons import AUTORESOLVE, resolve
 
 # model_path can refer to both hf or local path..
 
+#
 
-class EditParameters:
+class ModelParamEditor:
     def __init__(
         self,
         model_path=AUTORESOLVE,
@@ -83,6 +84,6 @@ class EditParameters:
 
 
 if __name__ == "__main__":
-    fire.Fire(EditParameters)
+    fire.Fire(ModelParamEditor)
     # Uncomment to run test directly
     # test_hf_model_resetter()

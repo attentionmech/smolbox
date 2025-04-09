@@ -16,8 +16,9 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from smolbox.core.commons import AUTORESOLVE, resolve
 
+# plain old sampler
 
-class Inference:
+class BasicSampler:
     def __init__(
         self,
         model_path=AUTORESOLVE,
@@ -66,4 +67,4 @@ class Inference:
 
 
 if __name__ == "__main__":
-    fire.Fire(Inference)
+    fire.Fire(BasicSampler)
