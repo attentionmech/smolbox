@@ -15,7 +15,7 @@ import os
 
 from smolbox.core.commons  import AUTORESOLVE, resolve
 
-class HfLocalInference:
+class Inference:
     def __init__(
         self,
         model_path=AUTORESOLVE,
@@ -64,4 +64,4 @@ class HfLocalInference:
 
 
 if __name__ == "__main__":
-    fire.Fire(HfLocalInference)
+    fire.Fire(Inference)
