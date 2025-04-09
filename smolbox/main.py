@@ -7,8 +7,10 @@ import fire
 
 from smolbox.core.commons import next_state
 
-TOOLS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tools")
-EXP_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "experiments")
+# Default directories (can be overridden via CLI)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DEFAULT_TOOLS_DIR = os.path.join(BASE_DIR, "tools")
+DEFAULT_EXP_DIR = os.path.join(BASE_DIR, "experiments")
 
 
 def check_uv():
@@ -23,23 +25,24 @@ def check_uv():
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
         )
-    except:
+    except Exception:
         print("Ensure uv is working properly! (uv --version) failed")
         sys.exit(1)
 
 
-def exec_tool(script: str, *args, **kwargs):
+def exec_tool(script: str, *args, tools_dir=DEFAULT_TOOLS_DIR, **kwargs):
     """
     Run a tool script from the tools directory using 'uv run'.
 
     Args:
-        script (str): Script name without '.py' (e.g., 'param_tweak_sampler').
-        args: Positional CLI arguments (e.g., subcommands like 'sample').
+        script (str): Script name without '.py'.
+        args: Positional CLI arguments.
+        tools_dir (str): Override tools directory.
         kwargs: Keyword arguments passed as CLI flags (--key=value).
     """
     check_uv()
 
-    script_path = os.path.join(TOOLS_DIR, f"{script}.py")
+    script_path = os.path.join(tools_dir, f"{script}.py")
     if not os.path.exists(script_path):
         raise FileNotFoundError(f"Script not found: {script_path}")
 
@@ -54,29 +57,29 @@ def exec_tool(script: str, *args, **kwargs):
         sys.exit(1)
 
 
-def list_tools():
+def list_tools(tools_dir=DEFAULT_TOOLS_DIR):
     """
     Print all available tools in the tools directory.
     """
     print("> Available tools:")
-    for fname in os.listdir(TOOLS_DIR):
+    for fname in os.listdir(tools_dir):
         if fname.endswith(".py") and not fname.startswith("_"):
-            tool_name = fname.removesuffix(".py")
-            print(f"  - {tool_name}")
+            print(f"  - {fname.removesuffix('.py')}")
 
 
-def exec_experiments(script: str, *args, **kwargs):
+def exec_experiments(script: str, *args, exp_dir=DEFAULT_EXP_DIR, **kwargs):
     """
     Run an experiment script from the experiments directory using 'uv run'.
 
     Args:
-        script (str): Script name without '.py' (e.g., 'ablation_study').
+        script (str): Script name without '.py'.
         args: Positional CLI arguments.
+        exp_dir (str): Override experiments directory.
         kwargs: Keyword arguments passed as CLI flags (--key=value).
     """
     check_uv()
 
-    script_path = os.path.join(EXP_DIR, f"{script}.py")
+    script_path = os.path.join(exp_dir, f"{script}.py")
     if not os.path.exists(script_path):
         raise FileNotFoundError(f"Script not found: {script_path}")
 
@@ -90,15 +93,14 @@ def exec_experiments(script: str, *args, **kwargs):
         sys.exit(1)
 
 
-def list_experiments():
+def list_experiments(exp_dir=DEFAULT_EXP_DIR):
     """
     Print all available experiment scripts in the experiments directory.
     """
     print("> Available experiments:")
-    for fname in os.listdir(EXP_DIR):
+    for fname in os.listdir(exp_dir):
         if fname.endswith(".py") and not fname.startswith("_"):
-            experiment_name = fname.removesuffix(".py")
-            print(f"  - {experiment_name}")
+            print(f"  - {fname.removesuffix('.py')}")
 
 
 def main():
@@ -106,8 +108,8 @@ def main():
         {
             "use": exec_tool,
             "ls": list_tools,
-            "use-exp": exec_experiments,  # <- was calling exec_tool before, fixed
-            "ls-exp": list_experiments,  # <- was calling list_tools before, fixed
+            "run-x": exec_experiments,
+            "list-x": list_experiments,
         }
     )
 
