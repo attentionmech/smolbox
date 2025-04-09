@@ -16,7 +16,7 @@ import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer, Trainer, TrainingArguments
 from datasets import load_dataset
 
-from smolbox.core.commons import AUTORESOLVE, resolve
+from smolbox.core.state_manager import AUTORESOLVE, resolve
 
 class ModelFineTuner:
     def __init__(
