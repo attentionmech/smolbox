@@ -14,7 +14,7 @@ import fire
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-from smolbox.core.commons import AUTORESOLVE, resolve
+from smolbox.core.state_manager import AUTORESOLVE, resolve
 
 
 # doesn't modify the model, just supports sample time tweaks

@@ -15,7 +15,7 @@ import fire
 import torch
 from transformers import AutoModel, AutoTokenizer
 
-from smolbox.core.commons import AUTORESOLVE, resolve
+from smolbox.core.state_manager import AUTORESOLVE, resolve
 
 # model_path can refer to both hf or local path..
 

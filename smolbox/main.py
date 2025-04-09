@@ -5,7 +5,7 @@ import sys
 
 import fire
 
-from smolbox.core.commons import next_state
+from smolbox.core.state_manager import next_state
 
 # Default directories (can be overridden via CLI)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
