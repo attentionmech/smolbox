@@ -1,7 +1,7 @@
 # /// script
 # requires-python = ">=3.11"
 # dependencies = [
-#   "transformers",
+#   "transformers[torch]",
 #   "fire",
 #   "torch",
 #   "datasets",
@@ -25,7 +25,7 @@ class ModelFineTuner(BaseTool):
     def __init__(
         self,
         model_path: str = AUTORESOLVE,
-        dataset_path: str = AUTORESOLVE,
+        dataset_path: str = None,
         output_model_path: str = AUTORESOLVE,
         num_train_epochs: int = 3,
         batch_size: int = 8,
@@ -89,8 +89,13 @@ class ModelFineTuner(BaseTool):
             ],
         )
 
-        # For causal LM, we need input_ids as labels (shifted by the model)
-        tokenized_dataset.set_format("torch", columns=["input_ids", "attention_mask"])
+        tokenized_dataset = tokenized_dataset.map(
+            lambda x: {"labels": x["input_ids"]},
+            batched=True,
+        )
+
+        tokenized_dataset.set_format("torch", columns=["input_ids", "attention_mask", "labels"])
+        
         return tokenized_dataset["train"]
 
     def run(self):
@@ -140,4 +145,3 @@ class ModelFineTuner(BaseTool):
 
 if __name__ == "__main__":
     fire.Fire(ModelFineTuner)
-    # Example usage: python script.py --model_path="./new_gpt2_2layer" --dataset_path="wikitext-2-raw-v1" --output_model_path="./finetuned_gpt2"
