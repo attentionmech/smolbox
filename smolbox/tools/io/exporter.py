@@ -56,7 +56,7 @@ class ModelExporter(BaseTool):
         model.to(self.device)
         return model, tokenizer
 
-    def export_model(self, model):
+    def export_model(self, model, tokenizer):
         # Ensure export path is provided
         if not self.export_model_path:
             raise ValueError("export_model_path must be provided for exporting the model.")
@@ -65,6 +65,7 @@ class ModelExporter(BaseTool):
             # Save the PyTorch model
             print(f"Exporting model to {self.export_model_path} as a PyTorch checkpoint...")
             model.save_pretrained(self.export_model_path)
+            tokenizer.save_pretrained(self.export_model_path)
         else:
             print("Not supported yet..")
 
@@ -73,7 +74,7 @@ class ModelExporter(BaseTool):
         print(f"Model loaded successfully on device: {self.device}")
 
         if self.export_model_path:
-            self.export_model(model)
+            self.export_model(model, tokenizer)
             print(f"Model exported to {self.export_model_path} in {self.export_format} format.")
         else:
             print("No export path provided. Not exporting the model.")
