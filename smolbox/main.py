@@ -3,16 +3,19 @@ import subprocess
 import sys
 
 import fire
-from smolbox.core.state_manager import next_state, reset_state
+from smolbox.core.state_manager import next_state, reset_state, set, get
 
 # Default directories (can be overridden via CLI)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_TOOLS_DIR = os.path.join(BASE_DIR, "tools")
 
+
 # Internal commands that don't map to tool scripts
 INTERNAL_COMMANDS = {
-    "ls": lambda: list_tools(DEFAULT_TOOLS_DIR),
-    "reset": lambda: reset_state(),
+    "ls": lambda *args: list_tools(DEFAULT_TOOLS_DIR),
+    "reset": lambda *args: reset_state(),
+    "set": lambda args: set(args[0], args[1]),
+    "get": lambda args: get(args[0], True),
     # "version": lambda: print("smolbox v0.1.0"),  # Add more as needed
 }
 
@@ -69,6 +72,7 @@ def exec_tool(script: str, *args, tools_dir=DEFAULT_TOOLS_DIR, **kwargs):
     try:
         subprocess.run(cmd, check=True)
         next_state()
+        print(">> Tool execution successful.\n\n")
     except subprocess.CalledProcessError as e:
         print(f"Tool execution failed with code {e.returncode}")
         sys.exit(1)
@@ -88,14 +92,13 @@ def list_tools(tools_dir=DEFAULT_TOOLS_DIR):
 
 def main():
     if len(sys.argv) < 2:
-        print("Usage: smolbox <toolname> [args]  — or —  smolbox ls")
+        print("Usage: smolbox <toolname> [args]  — or —  smolbox " + " | ".join(INTERNAL_COMMANDS.keys()))
         sys.exit(1)
 
     command = sys.argv[1]
     args = sys.argv[2:]
-
     if command in INTERNAL_COMMANDS:
-        INTERNAL_COMMANDS[command]()
+        INTERNAL_COMMANDS[command](args)
         return
 
     script_path = os.path.join(DEFAULT_TOOLS_DIR, f"{command}.py")

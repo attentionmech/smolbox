@@ -32,6 +32,28 @@ def get_current_state():
         return json.load(f)
 
 
+def set(key, value) -> str:
+    
+    if key not in ALLOWED_KEYS:
+        print(f"Invalid key name: {key} for state.")
+    
+    state = get_current_state()
+    state[key] = value
+    save_current_state(state)
+    return value
+
+
+def get(key, outupt=False) -> str:
+    
+    if key not in ALLOWED_KEYS:
+        print(f"Invalid key name: {key} for state.")
+    
+    state = get_current_state()
+    if outupt:
+        print(state[key])
+    return state[key]
+
+
 def save_current_state(state_dict):
     """Save state to file (no history)."""
     ensure_smolbox_dir()
