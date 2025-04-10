@@ -60,11 +60,10 @@ use via `smox` or `smolbox` cli commands
 ### Basic Structure
 
 ```bash
-smolbox <tool_name> [run] [tool_arguments...]
+smolbox <tool_name> [tool_arguments...]
 ```
 
 *   `<tool_name>`: The path to the tool relative to the `smolbox/tools` directory (e.g., `io/importer`, `infer/sampler`).
-*   `[run]`: The `run` subcommand is implicitly assumed if not provided, executing the tool's `run` method. You can often omit it.
 *   `[tool_arguments...]`: Arguments specific to the tool (e.g., `--prompt "Hello"`, `--num_train_epochs 1`). Use `--help` for tool-specific options: `smolbox <tool_name> --help`.
 
 ### Internal Commands
