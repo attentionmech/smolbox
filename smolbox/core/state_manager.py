@@ -6,8 +6,9 @@ import shutil
 
 AUTORESOLVE = "<AUTO>"
 
-ALLOWED_KEYS = ["model_path", "output_model_path"]
-WRITABLE_KEYS = ["output_model_path"]
+# Updated ALLOWED_KEYS to include dataset_path and output_dataset_path
+ALLOWED_KEYS = ["model_path", "output_model_path", "dataset_path", "output_dataset_path"]
+WRITABLE_KEYS = ["output_model_path", "output_dataset_path"]
 
 SMOLBOX_DIR = os.path.join(os.getcwd(), ".smolbox")
 STATE_FILE = os.path.join(SMOLBOX_DIR, "state.json")
@@ -33,7 +34,6 @@ def get_current_state():
 
 
 def set(key, value) -> str:
-    
     if key not in ALLOWED_KEYS:
         print(f"Invalid key name: {key} for state.")
     
@@ -43,13 +43,12 @@ def set(key, value) -> str:
     return value
 
 
-def get(key, outupt=False) -> str:
-    
+def get(key, output=False) -> str:
     if key not in ALLOWED_KEYS:
         print(f"Invalid key name: {key} for state.")
     
     state = get_current_state()
-    if outupt:
+    if output:
         print(state[key])
     return state[key]
 
@@ -129,6 +128,11 @@ def next_state():
     ) or current_state.get("model_path")
     current_state["output_model_path"] = None
 
+    current_state["dataset_path"] = current_state.get(
+        "output_dataset_path"
+    ) or current_state.get("dataset_path")
+    current_state["output_dataset_path"] = None
+
     current_state["updated_at"] = now()
 
     save_current_state(current_state)
@@ -138,3 +142,11 @@ def next_state():
 def reset_state():
     if os.path.exists(SMOLBOX_DIR):
         shutil.rmtree(SMOLBOX_DIR)
+
+
+def init_state():
+    ensure_smolbox_dir()
+
+
+def print_state():
+    print(json.dumps(get_current_state(), indent=2))

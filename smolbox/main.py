@@ -3,7 +3,7 @@ import subprocess
 import sys
 
 import fire
-from smolbox.core.state_manager import next_state, reset_state, set, get
+from smolbox.core.state_manager import next_state, reset_state, set, get, init_state,print_state
 
 # Default directories (can be overridden via CLI)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -12,10 +12,12 @@ DEFAULT_TOOLS_DIR = os.path.join(BASE_DIR, "tools")
 
 # Internal commands that don't map to tool scripts
 INTERNAL_COMMANDS = {
-    "ls": lambda *args: list_tools(DEFAULT_TOOLS_DIR),
-    "reset": lambda *args: reset_state(),
+    "ls": lambda args: list_tools(DEFAULT_TOOLS_DIR),
+    "reset": lambda args: reset_state(),
     "set": lambda args: set(args[0], args[1]),
     "get": lambda args: get(args[0], True),
+    "init": lambda args: init_state(),
+    "state": lambda args: print_state(),
     # "version": lambda: print("smolbox v0.1.0"),  # Add more as needed
 }
 

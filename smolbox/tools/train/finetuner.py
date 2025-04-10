@@ -25,7 +25,7 @@ class ModelFineTuner(BaseTool):
     def __init__(
         self,
         model_path: str = AUTORESOLVE,
-        dataset_path: str = None,
+        dataset_path: str = AUTORESOLVE,
         output_model_path: str = AUTORESOLVE,
         num_train_epochs: int = 3,
         batch_size: int = 8,

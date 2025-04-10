@@ -10,17 +10,11 @@
 
 import os
 import re
-
 import fire
 import torch
 from transformers import AutoModel, AutoTokenizer
-
 from smolbox.core.state_manager import AUTORESOLVE, resolve
 from smolbox.core.base_tool import BaseTool
-
-# model_path can refer to both hf or local path..
-
-#
 
 
 class ModelParamEditor(BaseTool):
@@ -28,10 +22,10 @@ class ModelParamEditor(BaseTool):
         self,
         model_path=AUTORESOLVE,
         output_model_path=AUTORESOLVE,
-        reset_type="zero",  # options: 'zero', 'random'
+        reset_type="zero",  # options: 'zero', 'random', or 'expression'
         param_pattern=".*",  # regex pattern to match parameter names
+        param_expression=None,  # Python expression or lambda function for custom param reset
     ):
-
         model_path = resolve("model_path", model_path)
         output_model_path = resolve("output_model_path", output_model_path, write=True)
 
@@ -39,12 +33,17 @@ class ModelParamEditor(BaseTool):
         print(f"Output path: {output_model_path}")
 
         if os.path.exists(output_model_path) and os.listdir(output_model_path):
-            print(f"WARNING: Output directory {output_model_path} is non empty.")
+            print(f"WARNING: Output directory {output_model_path} is non-empty.")
 
         self.model_path = model_path
         self.output_path = output_model_path
         self.reset_type = reset_type.lower()
         self.param_pattern = param_pattern
+        self.param_expression = param_expression
+
+        # Automatically assume 'expression' if param_expression is provided
+        if self.param_expression:
+            self.reset_type = "expression"
 
     def _reset_parameters(self, model):
         print(
@@ -56,7 +55,13 @@ class ModelParamEditor(BaseTool):
             if not pattern.match(name):
                 continue
 
-            if self.reset_type == "zero":
+            if self.reset_type == "expression":
+                # Apply the custom expression (should be a lambda or a valid Python expression)
+                if callable(self.param_expression):
+                    self.param_expression(param)
+                else:
+                    raise ValueError("param_expression should be a callable (e.g., a lambda function).")
+            elif self.reset_type == "zero":
                 param.data.zero_()
             elif self.reset_type == "random":
                 if hasattr(param, "reset_parameters"):
