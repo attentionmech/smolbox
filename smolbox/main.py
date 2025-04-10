@@ -3,7 +3,7 @@ import subprocess
 import sys
 
 import fire
-from smolbox.core.state_manager import next_state
+from smolbox.core.state_manager import next_state, reset_state
 
 # Default directories (can be overridden via CLI)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -12,6 +12,7 @@ DEFAULT_TOOLS_DIR = os.path.join(BASE_DIR, "tools")
 # Internal commands that don't map to tool scripts
 INTERNAL_COMMANDS = {
     "ls": lambda: list_tools(DEFAULT_TOOLS_DIR),
+    "reset": lambda: reset_state(),
     # "version": lambda: print("smolbox v0.1.0"),  # Add more as needed
 }
 
@@ -94,10 +95,8 @@ def main():
     args = sys.argv[2:]
 
     if command in INTERNAL_COMMANDS:
-        # Just call the function, don’t go through fire
         INTERNAL_COMMANDS[command]()
         return
-
 
     script_path = os.path.join(DEFAULT_TOOLS_DIR, f"{command}.py")
     if "/" not in command and not os.path.exists(script_path):
@@ -105,7 +104,11 @@ def main():
         print("Run `smolbox ls` to see available tools.")
         sys.exit(1)
 
+    if not args or args[0] not in ("run", "help", "--help", "-h"):
+        args = ["run"] + args
+
     exec_tool(command, *args)
+
 
 
 if __name__ == "__main__":

@@ -2,6 +2,7 @@ import json
 import os
 from datetime import datetime
 from uuid import uuid4
+import shutil
 
 AUTORESOLVE = "<AUTO>"
 
@@ -110,3 +111,8 @@ def next_state():
 
     save_current_state(current_state)
     return current_state
+
+
+def reset_state():
+    if os.path.exists(SMOLBOX_DIR):
+        shutil.rmtree(SMOLBOX_DIR)
