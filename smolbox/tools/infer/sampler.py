@@ -27,7 +27,7 @@ class BasicSampler(BaseTool):
         prompt="Once upon a time",
         max_new_tokens=50,
         do_sample=True,
-        temperature=0.8,
+        temperature=0.0,
         top_k=50,
         top_p=0.95,
         device=None,

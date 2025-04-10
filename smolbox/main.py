@@ -72,9 +72,14 @@ def exec_tool(script: str, *args, tools_dir=DEFAULT_TOOLS_DIR, **kwargs):
     cmd = ["uv", "run", script_path] + list(args) + kwarg_flags
 
     try:
+        print("-"*20)
+        print(">> Executing tool:", " ".join(cmd))
+        print("-"*20)
+        
         subprocess.run(cmd, check=True)
         next_state()
         print(">> Tool execution successful.\n\n")
+        print("\n\n\n")
     except subprocess.CalledProcessError as e:
         print(f"Tool execution failed with code {e.returncode}")
         sys.exit(1)

@@ -145,6 +145,7 @@ def reset_state():
 
 
 def init_state():
+    reset_state()
     ensure_smolbox_dir()
 
 
