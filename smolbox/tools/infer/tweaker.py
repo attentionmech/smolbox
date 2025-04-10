@@ -91,7 +91,8 @@ class ModelTweakSampler(BaseTool):
             do_sample=True,
         )
 
-        return self._tokenizer.decode(output[0], skip_special_tokens=True)
+        print(self._tokenizer.decode(output[0], skip_special_tokens=True))
+        return True
 
 
 if __name__ == "__main__":

@@ -87,7 +87,9 @@ class ModelParamEditor(BaseTool):
         tokenizer = AutoTokenizer.from_pretrained(self.model_path)
         tokenizer.save_pretrained(self.output_path)
 
-        return f"Model reset ({self.reset_type}) and saved to {self.output_path}"
+        print(f"Model reset ({self.reset_type}) and saved to {self.output_path}")
+
+        return True
 
 
 if __name__ == "__main__":

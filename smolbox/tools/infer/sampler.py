@@ -27,7 +27,7 @@ class BasicSampler(BaseTool):
         prompt="Once upon a time",
         max_new_tokens=50,
         do_sample=True,
-        temperature=0.0,
+        temperature=0.6,
         top_k=50,
         top_p=0.95,
         device=None,
@@ -63,9 +63,9 @@ class BasicSampler(BaseTool):
             )
 
         decoded = tokenizer.decode(output[0], skip_special_tokens=True)
-        # print("\n=== Output ===")
-        # print(decoded)
-        return decoded
+        print("\n=== Output ===")
+        print(decoded)
+        return True
 
 
 if __name__ == "__main__":

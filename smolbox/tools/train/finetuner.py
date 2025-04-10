@@ -139,8 +139,8 @@ class ModelFineTuner(BaseTool):
         print(f"Saving fine-tuned model to: {self.output_path}")
         trainer.save_model(self.output_path)
         tokenizer.save_pretrained(self.output_path)
-
-        return f"Model fine-tuned and saved to {self.output_path}"
+        print(f"Model fine-tuned and saved to {self.output_path}")
+        return True
 
 
 if __name__ == "__main__":

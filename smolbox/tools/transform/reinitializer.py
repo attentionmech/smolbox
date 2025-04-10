@@ -95,7 +95,9 @@ class ModelFromConfigInitializer(BaseTool):
         tokenizer = AutoTokenizer.from_pretrained(self.model_path)
         tokenizer.save_pretrained(self.output_path)
 
-        return f"New model instance created from config and saved to {self.output_path}"
+        print(f"New model instance created from config and saved to {self.output_path}")
+
+        return True
 
 
 if __name__ == "__main__":
