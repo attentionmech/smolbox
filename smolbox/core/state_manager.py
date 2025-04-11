@@ -37,12 +37,12 @@ def ensure_smolbox_dir():
     if not os.path.exists(SMOLBOX_DIR):
         os.makedirs(SMOLBOX_DIR)
 
-
-def get_current_state():
-    ensure_smolbox_dir()
     if not os.path.exists(STATE_FILE):
         with open(STATE_FILE, "w") as f:
             json.dump({}, f)
+
+def get_current_state():
+    ensure_smolbox_dir()
     with open(STATE_FILE, "r") as f:
         return json.load(f)
 
@@ -51,13 +51,11 @@ def save_current_state(state_dict):
     state_dict["updated_at"] = now()
     if "created_at" not in state_dict:
         state_dict["created_at"] = now()
-    ensure_smolbox_dir()
     with open(STATE_FILE, "w") as f:
         json.dump(state_dict, f, indent=2, sort_keys=True)
 
 
 def commit_history(state_dict=None):
-    ensure_smolbox_dir()
     if state_dict is None:
         state_dict = get_current_state()
     with open(STATE_HISTORY_FILE, "a") as f:
