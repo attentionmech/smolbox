@@ -12,32 +12,23 @@ WRITABLE_KEYS = ["output_model_path", "output_dataset_path"]
 def is_colab():
     return os.path.exists("/content")
 
-USE_IN_MEMORY = is_colab()
-
-
-MEMORY_STATE = {}
-
-if not USE_IN_MEMORY:
+# Directory and file paths depending on environment
+if is_colab():
+    SMOLBOX_DIR = os.path.join("/content", ".smolbox")
+else:
     SMOLBOX_DIR = os.path.join(os.getcwd(), ".smolbox")
-    STATE_FILE = os.path.join(SMOLBOX_DIR, "state.json")
-    STATE_HISTORY_FILE = os.path.join(SMOLBOX_DIR, "state_history.jsonl")
 
-if USE_IN_MEMORY:
-    if "MEMORY_STATE" not in globals():
-        globals()["MEMORY_STATE"] = {}
-    MEMORY_STATE = globals()["MEMORY_STATE"]
-
+STATE_FILE = os.path.join(SMOLBOX_DIR, "state.json")
+STATE_HISTORY_FILE = os.path.join(SMOLBOX_DIR, "state_history.jsonl")
 
 def now():
     return datetime.utcnow().isoformat() + "Z"
 
 def ensure_smolbox_dir():
-    if not USE_IN_MEMORY and not os.path.exists(SMOLBOX_DIR):
+    if not os.path.exists(SMOLBOX_DIR):
         os.makedirs(SMOLBOX_DIR)
 
 def get_current_state():
-    if USE_IN_MEMORY:
-        return MEMORY_STATE
     ensure_smolbox_dir()
     if not os.path.exists(STATE_FILE):
         with open(STATE_FILE, "w") as f:
@@ -49,17 +40,11 @@ def save_current_state(state_dict):
     state_dict["updated_at"] = now()
     if "created_at" not in state_dict:
         state_dict["created_at"] = now()
-    if USE_IN_MEMORY:
-        MEMORY_STATE.clear()
-        MEMORY_STATE.update(state_dict)
-    else:
-        ensure_smolbox_dir()
-        with open(STATE_FILE, "w") as f:
-            json.dump(state_dict, f, indent=2, sort_keys=True)
+    ensure_smolbox_dir()
+    with open(STATE_FILE, "w") as f:
+        json.dump(state_dict, f, indent=2, sort_keys=True)
 
 def commit_history(state_dict=None):
-    if USE_IN_MEMORY:
-        return
     ensure_smolbox_dir()
     if state_dict is None:
         state_dict = get_current_state()
@@ -79,8 +64,8 @@ def get(key, output=False) -> str:
         print(f"Invalid key name: {key} for state.")
     state = get_current_state()
     if output:
-        print(state[key])
-    return state[key]
+        print(state.get(key))
+    return state.get(key)
 
 def update_state(updates: dict):
     state = get_current_state()
@@ -115,13 +100,10 @@ def resolve(key_name, key_value, write=False):
                 return dikt[key_name]
             else:
                 new_folder_name = str(uuid4())
-                if USE_IN_MEMORY:
-                    new_folder_path = f"/tmp/{new_folder_name}"
-                else:
-                    new_folder_path = os.path.join(SMOLBOX_DIR, new_folder_name)
-                    os.makedirs(new_folder_path)
-                dikt[key_name] = new_folder_path
+                new_folder_path = os.path.join(SMOLBOX_DIR, new_folder_name)
+                os.makedirs(new_folder_path)
 
+                dikt[key_name] = new_folder_path
                 if "created_at" not in dikt:
                     dikt["created_at"] = now()
                 dikt["updated_at"] = now()
@@ -132,14 +114,11 @@ def resolve(key_name, key_value, write=False):
 def next_state():
     current_state = get_current_state()
     commit_history(current_state)
-    current_state["model_path"] = current_state.get(
-        "output_model_path"
-    ) or current_state.get("model_path")
+
+    current_state["model_path"] = current_state.get("output_model_path") or current_state.get("model_path")
     current_state["output_model_path"] = None
 
-    current_state["dataset_path"] = current_state.get(
-        "output_dataset_path"
-    ) or current_state.get("dataset_path")
+    current_state["dataset_path"] = current_state.get("output_dataset_path") or current_state.get("dataset_path")
     current_state["output_dataset_path"] = None
 
     current_state["updated_at"] = now()
@@ -148,16 +127,12 @@ def next_state():
     return current_state
 
 def reset_state():
-    if USE_IN_MEMORY:
-        MEMORY_STATE.clear()
-    else:
-        if os.path.exists(SMOLBOX_DIR):
-            shutil.rmtree(SMOLBOX_DIR)
+    if os.path.exists(SMOLBOX_DIR):
+        shutil.rmtree(SMOLBOX_DIR)
 
 def init_state():
     reset_state()
-    if not USE_IN_MEMORY:
-        ensure_smolbox_dir()
+    ensure_smolbox_dir()
 
 def print_state():
     print(json.dumps(get_current_state(), indent=2))
