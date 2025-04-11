@@ -27,7 +27,7 @@ class ModelFineTuner(BaseTool):
         model_path: str = AUTORESOLVE,
         dataset_path: str = AUTORESOLVE,
         output_model_path: str = AUTORESOLVE,
-        num_train_epochs: int = 3,
+        num_train_epochs: int = 1,
         batch_size: int = 8,
         learning_rate: float = 5e-5,
         max_seq_length: int = 512,
