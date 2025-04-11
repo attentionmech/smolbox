@@ -68,10 +68,16 @@ class ModelFineTuner(BaseTool):
     def _prepare_dataset(self, tokenizer):
         """Load and preprocess the dataset."""
         print(f"Loading dataset from: {self.dataset_path}")
+        
         dataset = load_dataset(self.dataset_path)
 
         if "train" not in dataset:
             raise ValueError("Dataset must have a 'train' split")
+
+        if self.max_train_samples is not None:
+            print(f"Loading only {self.max_train_samples} samples from training set")
+            dataset["train"] = dataset["train"].select(range(self.max_train_samples))
+
 
         def tokenize_function(examples):
             return tokenizer(
