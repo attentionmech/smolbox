@@ -66,7 +66,7 @@ def exec_tool(script: str, *args, tools_dir=DEFAULT_TOOLS_DIR, **kwargs):
         sys.exit(1)
 
     kwarg_flags = [f"--{k}={v}" for k, v in kwargs.items()]
-    cmd = ["uv", "run", script_path] + list(args) + kwarg_flags
+    cmd = ["uv", "run","--prerelease","allow", script_path] + list(args) + kwarg_flags
 
     try:
         print("-" * 20)
