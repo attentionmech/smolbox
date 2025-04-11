@@ -15,6 +15,18 @@ STATE_FILE = os.path.join(SMOLBOX_DIR, "state.json")
 STATE_HISTORY_FILE = os.path.join(SMOLBOX_DIR, "state_history.jsonl")
 
 
+
+def is_colab():
+    return os.path.exists("/content")
+
+
+if is_colab():
+    SMOLBOX_DIR = "/content/.smolbox"
+else:
+    SMOLBOX_DIR = os.path.join(os.getcwd(), ".smolbox")
+
+
+
 def now():
     return datetime.utcnow().isoformat() + "Z"  # ISO 8601 in UTC
 
