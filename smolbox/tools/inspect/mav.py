@@ -61,7 +61,7 @@ class MAVRunner(BaseTool):
         self.seed = seed
 
     def run(self):
-        print(f"Running MAV with model: {self.model}")
+        print(f"Running MAV with model: {self.model_path}")
         mav_instance = MAV(
             model=self.model_path,
             prompt=self.prompt,
