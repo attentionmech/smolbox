@@ -15,7 +15,7 @@ import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from smolbox.core.state_manager import AUTORESOLVE, resolve
-from smolbox.core.base_tool import BaseTool
+from smolbox.core.tools import BaseTool
 
 # plain old sampler
 

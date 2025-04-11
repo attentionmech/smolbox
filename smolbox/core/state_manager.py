@@ -6,11 +6,18 @@ import shutil
 
 AUTORESOLVE = "<AUTO>"
 
-ALLOWED_KEYS = ["model_path", "output_model_path", "dataset_path", "output_dataset_path"]
+ALLOWED_KEYS = [
+    "model_path",
+    "output_model_path",
+    "dataset_path",
+    "output_dataset_path",
+]
 WRITABLE_KEYS = ["output_model_path", "output_dataset_path"]
+
 
 def is_colab():
     return os.path.exists("/content")
+
 
 # Directory and file paths depending on environment
 if is_colab():
@@ -21,12 +28,15 @@ else:
 STATE_FILE = os.path.join(SMOLBOX_DIR, "state.json")
 STATE_HISTORY_FILE = os.path.join(SMOLBOX_DIR, "state_history.jsonl")
 
+
 def now():
     return datetime.utcnow().isoformat() + "Z"
+
 
 def ensure_smolbox_dir():
     if not os.path.exists(SMOLBOX_DIR):
         os.makedirs(SMOLBOX_DIR)
+
 
 def get_current_state():
     ensure_smolbox_dir()
@@ -36,6 +46,7 @@ def get_current_state():
     with open(STATE_FILE, "r") as f:
         return json.load(f)
 
+
 def save_current_state(state_dict):
     state_dict["updated_at"] = now()
     if "created_at" not in state_dict:
@@ -44,12 +55,14 @@ def save_current_state(state_dict):
     with open(STATE_FILE, "w") as f:
         json.dump(state_dict, f, indent=2, sort_keys=True)
 
+
 def commit_history(state_dict=None):
     ensure_smolbox_dir()
     if state_dict is None:
         state_dict = get_current_state()
     with open(STATE_HISTORY_FILE, "a") as f:
         f.write(json.dumps(state_dict) + "\n")
+
 
 def set(key, value) -> str:
     if key not in ALLOWED_KEYS:
@@ -59,6 +72,7 @@ def set(key, value) -> str:
     save_current_state(state)
     return value
 
+
 def get(key, output=False) -> str:
     if key not in ALLOWED_KEYS:
         print(f"Invalid key name: {key} for state.")
@@ -67,12 +81,14 @@ def get(key, output=False) -> str:
         print(state.get(key))
     return state.get(key)
 
+
 def update_state(updates: dict):
     state = get_current_state()
     for k, v in updates.items():
         if k in ALLOWED_KEYS or k in ["created_at", "updated_at"]:
             state[k] = v
     save_current_state(state)
+
 
 def resolve(key_name, key_value, write=False):
     dikt = get_current_state()
@@ -111,14 +127,19 @@ def resolve(key_name, key_value, write=False):
                 save_current_state(dikt)
                 return new_folder_path
 
+
 def next_state():
     current_state = get_current_state()
     commit_history(current_state)
 
-    current_state["model_path"] = current_state.get("output_model_path") or current_state.get("model_path")
+    current_state["model_path"] = current_state.get(
+        "output_model_path"
+    ) or current_state.get("model_path")
     current_state["output_model_path"] = None
 
-    current_state["dataset_path"] = current_state.get("output_dataset_path") or current_state.get("dataset_path")
+    current_state["dataset_path"] = current_state.get(
+        "output_dataset_path"
+    ) or current_state.get("dataset_path")
     current_state["output_dataset_path"] = None
 
     current_state["updated_at"] = now()
@@ -126,13 +147,29 @@ def next_state():
     save_current_state(current_state)
     return current_state
 
+
 def reset_state():
     if os.path.exists(SMOLBOX_DIR):
         shutil.rmtree(SMOLBOX_DIR)
+
 
 def init_state():
     reset_state()
     ensure_smolbox_dir()
 
+
 def print_state():
     print(json.dumps(get_current_state(), indent=2))
+
+
+def list_models():
+    models_dir = os.path.join(SMOLBOX_DIR, "models")
+    if not os.path.exists(models_dir):
+        print("No models directory found.")
+        return []
+
+    models = [f for f in os.listdir(models_dir) if not f.startswith(".")]
+    print("Available models:")
+    for model in models:
+        print(f"- {model}")
+    return models

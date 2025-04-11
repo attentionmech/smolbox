@@ -11,10 +11,9 @@
 import os
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import torch
-from smolbox.core.state_manager import resolve,AUTORESOLVE
-from smolbox.core.base_tool import BaseTool
+from smolbox.core.state_manager import resolve, AUTORESOLVE
+from smolbox.core.tools import BaseTool
 import fire
-
 
 
 class ModelImporter(BaseTool):

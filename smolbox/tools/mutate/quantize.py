@@ -13,7 +13,7 @@ import fire
 import torch
 from transformers import AutoModel, AutoTokenizer
 from smolbox.core.state_manager import AUTORESOLVE, resolve
-from smolbox.core.base_tool import BaseTool
+from smolbox.core.tools import BaseTool
 
 
 class ModelQuantizer(BaseTool):
@@ -22,7 +22,9 @@ class ModelQuantizer(BaseTool):
         model_path=AUTORESOLVE,
         output_model_path=AUTORESOLVE,
         precision=8,  # Target precision in bits (e.g., 8 or 16)
-        layer_types=["Linear"],  # List of layer types to quantize (default: Linear layers)
+        layer_types=[
+            "Linear"
+        ],  # List of layer types to quantize (default: Linear layers)
     ):
         model_path = resolve("model_path", model_path)
         output_model_path = resolve("output_model_path", output_model_path, write=True)
@@ -78,7 +80,9 @@ class ModelQuantizer(BaseTool):
         tokenizer = AutoTokenizer.from_pretrained(self.model_path)
         tokenizer.save_pretrained(self.output_path)
 
-        print(f"Model quantized to {self.precision}-bit and saved to {self.output_path}")
+        print(
+            f"Model quantized to {self.precision}-bit and saved to {self.output_path}"
+        )
 
         return True
 

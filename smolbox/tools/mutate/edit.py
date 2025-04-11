@@ -14,7 +14,7 @@ import fire
 import torch
 from transformers import AutoModel, AutoTokenizer
 from smolbox.core.state_manager import AUTORESOLVE, resolve
-from smolbox.core.base_tool import BaseTool
+from smolbox.core.tools import BaseTool
 
 
 class ModelParamEditor(BaseTool):
@@ -60,7 +60,9 @@ class ModelParamEditor(BaseTool):
                 if callable(self.param_expression):
                     self.param_expression(param)
                 else:
-                    raise ValueError("param_expression should be a callable (e.g., a lambda function).")
+                    raise ValueError(
+                        "param_expression should be a callable (e.g., a lambda function)."
+                    )
             elif self.reset_type == "zero":
                 param.data.zero_()
             elif self.reset_type == "random":

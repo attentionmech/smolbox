@@ -14,7 +14,7 @@ import fire
 from transformers import AutoConfig, AutoModel, AutoTokenizer
 
 from smolbox.core.state_manager import AUTORESOLVE, resolve
-from smolbox.core.base_tool import BaseTool
+from smolbox.core.tools import BaseTool
 from torch.nn.utils import prune
 
 
@@ -52,17 +52,21 @@ class ModelPruner(BaseTool):
     def _prune_layers(self, model):
         """Prune the specified layers of the model."""
         print(f"Pruning {self.layer_type} layers in the model.")
-        
+
         # Loop through model layers and prune the ones that match the specified type
         for name, module in model.named_modules():
             if isinstance(module, torch.nn.Linear) and self.layer_type == "linear":
                 print(f"Pruning {name}...")
-                prune.l1_unstructured(module, name="weight", amount=self.pruning_percentage)
-                
+                prune.l1_unstructured(
+                    module, name="weight", amount=self.pruning_percentage
+                )
+
             elif isinstance(module, torch.nn.Conv2d) and self.layer_type == "conv":
                 print(f"Pruning {name}...")
-                prune.l1_unstructured(module, name="weight", amount=self.pruning_percentage)
-        
+                prune.l1_unstructured(
+                    module, name="weight", amount=self.pruning_percentage
+                )
+
         return model
 
     def run(self):

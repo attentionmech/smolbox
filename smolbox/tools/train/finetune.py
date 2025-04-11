@@ -17,7 +17,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, Trainer, TrainingA
 from datasets import load_dataset
 
 from smolbox.core.state_manager import AUTORESOLVE, resolve
-from smolbox.core.base_tool import BaseTool
+from smolbox.core.tools import BaseTool
 
 
 class ModelFineTuner(BaseTool):
@@ -68,7 +68,7 @@ class ModelFineTuner(BaseTool):
     def _prepare_dataset(self, tokenizer):
         """Load and preprocess the dataset."""
         print(f"Loading dataset from: {self.dataset_path}")
-        
+
         dataset = load_dataset(self.dataset_path)
 
         if "train" not in dataset:
@@ -77,7 +77,6 @@ class ModelFineTuner(BaseTool):
         if self.max_train_samples is not None:
             print(f"Loading only {self.max_train_samples} samples from training set")
             dataset["train"] = dataset["train"].select(range(self.max_train_samples))
-
 
         def tokenize_function(examples):
             return tokenizer(
@@ -107,7 +106,9 @@ class ModelFineTuner(BaseTool):
                 range(self.max_train_samples)
             )
 
-        tokenized_dataset.set_format("torch", columns=["input_ids", "attention_mask", "labels"])
+        tokenized_dataset.set_format(
+            "torch", columns=["input_ids", "attention_mask", "labels"]
+        )
 
         return tokenized_dataset["train"]
 
