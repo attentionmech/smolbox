@@ -20,7 +20,7 @@ from openmav.mav import MAV
 class MAVRunner(BaseTool):
     def __init__(
         self,
-        model=AUTORESOLVE,
+        model_path=AUTORESOLVE,
         prompt="Once upon a time ",
         max_new_tokens=10,
         limit_chars=250,
