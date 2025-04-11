@@ -54,9 +54,6 @@ def contains_base_tool_subclass(script_path):
 
 
 def exec_tool(script: str, *args, tools_dir=DEFAULT_TOOLS_DIR, **kwargs):
-    """
-    Run a tool script from the tools directory using 'uv run'.
-    """
     check_uv()
 
     script_path = os.path.join(tools_dir, f"{script}.py")
@@ -69,36 +66,28 @@ def exec_tool(script: str, *args, tools_dir=DEFAULT_TOOLS_DIR, **kwargs):
         sys.exit(1)
 
     kwarg_flags = [f"--{k}={v}" for k, v in kwargs.items()]
-    cmd = ["uv", "run", script_path] + list(args) + kwarg_flags    
-    
+    cmd = ["uv", "run", script_path] + list(args) + kwarg_flags
+
     try:
         print("-" * 20)
         print(">> Executing tool:", " ".join(cmd))
         print("-" * 20)
 
-        result = subprocess.run(
-            cmd, check=True, capture_output=True, text=True
-        )
-        
-        # Optionally log stdout and stderr
-        print(result.stdout)
-        
-        # Call the next state logic
+        # Stream tool output directly to stdout/stderr
+        subprocess.run(cmd, check=True)
+
         next_state()
-        
+
         print(">> Tool execution successful.\n\n")
-        print("\n")
 
     except subprocess.CalledProcessError as e:
-        # Output error message and exit
         print(f"Tool execution failed with code {e.returncode}")
-        print(f"Error message: {e.stderr}")
         sys.exit(1)
 
     except Exception as e:
-        # Catch other exceptions, e.g., errors in `next_state()`
         print(f"Unexpected error: {str(e)}")
         sys.exit(1)
+
 
 def list_tools(tools_dir=DEFAULT_TOOLS_DIR):
     """
