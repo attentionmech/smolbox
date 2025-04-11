@@ -40,7 +40,7 @@ class MAVRunner(BaseTool):
         backend="transformers",
         seed=42,
     ):
-        self.model = resolve("model_path", model)
+        self.model = resolve("model_path", model_path)
         self.prompt = prompt
         self.max_new_tokens = max_new_tokens
         self.limit_chars = limit_chars
