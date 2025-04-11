@@ -165,4 +165,8 @@ class LogitLensRunner(BaseTool):
 
 
 if __name__ == "__main__":
-    fire.Fire(LogitLensRunner)
+    def main(**kwargs):
+        runner = LogitLensRunner(**kwargs)
+        runner.run()
+
+    fire.Fire(main)
