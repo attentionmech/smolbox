@@ -43,14 +43,28 @@ def print_logit_lens_terminal(frames, delay=1.0, max_tokens_per_layer=5, prompt=
             print(f"[Error in frame {frame_idx}]: {str(e)}")
 
 
+def get_layers_and_norm(model):
+    """Detect and return the transformer layers and norm based on model architecture."""
+    if hasattr(model, "model") and hasattr(model.model, "layers"):
+        print("Detected LLaMA-style model.")
+        return model.model.layers, model.model.norm
+    elif hasattr(model, "transformer") and hasattr(model.transformer, "h"):
+        print("Detected GPT-style model.")
+        return model.transformer.h, model.transformer.ln_f
+    else:
+        raise ValueError("Unsupported model architecture: can't find transformer layers or norm.")
+
+
 def compute_logit_lens(prompt, model):
     print(f"Computing logit lens for prompt: '{prompt}'")
     probs_layers = []
-    layers = model.transformer.h
+
+    layers, final_norm = get_layers_and_norm(model)
+
     with model.trace() as tracer:
         with tracer.invoke(prompt) as invoker:
             for layer in layers:
-                layer_out = model.lm_head(model.transformer.ln_f(layer.output[0]))
+                layer_out = model.lm_head(final_norm(layer.output[0]))
                 probs = torch.nn.functional.softmax(layer_out, dim=-1).save()
                 probs_layers.append(probs)
 
