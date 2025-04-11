@@ -14,7 +14,7 @@ import torch
 from smolbox.core.state_manager import AUTORESOLVE, resolve
 from smolbox.core.tool_manager import BaseTool
 
-from openmav import MAV
+from openmav.mav import MAV
 
 
 class MAVRunner(BaseTool):
