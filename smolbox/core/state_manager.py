@@ -14,12 +14,19 @@ def is_colab():
 
 USE_IN_MEMORY = is_colab()
 
+
+MEMORY_STATE = {}
+
 if not USE_IN_MEMORY:
     SMOLBOX_DIR = os.path.join(os.getcwd(), ".smolbox")
     STATE_FILE = os.path.join(SMOLBOX_DIR, "state.json")
     STATE_HISTORY_FILE = os.path.join(SMOLBOX_DIR, "state_history.jsonl")
 
-MEMORY_STATE = {}
+if USE_IN_MEMORY:
+    if "MEMORY_STATE" not in globals():
+        globals()["MEMORY_STATE"] = {}
+    MEMORY_STATE = globals()["MEMORY_STATE"]
+
 
 def now():
     return datetime.utcnow().isoformat() + "Z"
