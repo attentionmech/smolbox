@@ -20,7 +20,6 @@ from smolbox.core.state_manager import AUTORESOLVE, resolve
 from smolbox.core.base_tool import BaseTool
 
 
-
 class ModelFineTuner(BaseTool):
     def __init__(
         self,
@@ -31,6 +30,7 @@ class ModelFineTuner(BaseTool):
         batch_size: int = 8,
         learning_rate: float = 5e-5,
         max_seq_length: int = 512,
+        max_train_samples: int = None,  # <-- New param
     ):
         """
         Fine-tune a model on a dataset.
@@ -43,6 +43,7 @@ class ModelFineTuner(BaseTool):
             batch_size: Training batch size
             learning_rate: Learning rate for training
             max_seq_length: Maximum sequence length for tokenization
+            max_train_samples: Limit the number of training samples
         """
         model_path = resolve("model_path", model_path)
         dataset_path = resolve("dataset_path", dataset_path)
@@ -62,13 +63,13 @@ class ModelFineTuner(BaseTool):
         self.batch_size = batch_size
         self.learning_rate = learning_rate
         self.max_seq_length = max_seq_length
+        self.max_train_samples = max_train_samples
 
     def _prepare_dataset(self, tokenizer):
         """Load and preprocess the dataset."""
         print(f"Loading dataset from: {self.dataset_path}")
         dataset = load_dataset(self.dataset_path)
 
-        # Assume a text field named 'text' exists; adjust if needed
         if "train" not in dataset:
             raise ValueError("Dataset must have a 'train' split")
 
@@ -94,8 +95,14 @@ class ModelFineTuner(BaseTool):
             batched=True,
         )
 
+        if self.max_train_samples is not None:
+            print(f"Limiting dataset to {self.max_train_samples} samples")
+            tokenized_dataset["train"] = tokenized_dataset["train"].select(
+                range(self.max_train_samples)
+            )
+
         tokenized_dataset.set_format("torch", columns=["input_ids", "attention_mask", "labels"])
-        
+
         return tokenized_dataset["train"]
 
     def run(self):
@@ -104,15 +111,12 @@ class ModelFineTuner(BaseTool):
         model = AutoModelForCausalLM.from_pretrained(self.model_path)
         tokenizer = AutoTokenizer.from_pretrained(self.model_path)
 
-        # Set padding token if not already set (common for GPT-style models)
         if tokenizer.pad_token is None:
             tokenizer.pad_token = tokenizer.eos_token
             model.config.pad_token_id = model.config.eos_token_id
 
-        # Prepare dataset
         train_dataset = self._prepare_dataset(tokenizer)
 
-        # Define training arguments
         training_args = TrainingArguments(
             output_dir=self.output_path,
             num_train_epochs=self.num_train_epochs,
@@ -123,10 +127,9 @@ class ModelFineTuner(BaseTool):
             save_steps=500,
             save_total_limit=2,
             overwrite_output_dir=True,
-            fp16=torch.cuda.is_available(),  # Use mixed precision if GPU available
+            fp16=torch.cuda.is_available(),
         )
 
-        # Initialize Trainer
         trainer = Trainer(
             model=model,
             args=training_args,
