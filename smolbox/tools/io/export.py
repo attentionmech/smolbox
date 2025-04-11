@@ -14,7 +14,7 @@ import fire
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from optimum.exporters.onnx import main_export
 from smolbox.core.state_manager import resolve, AUTORESOLVE
-from smolbox.core.tools import BaseTool
+from smolbox.core.tool_manager import BaseTool
 
 
 class ModelExporter(BaseTool):

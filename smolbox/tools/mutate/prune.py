@@ -14,7 +14,7 @@ import fire
 from transformers import AutoConfig, AutoModel, AutoTokenizer
 
 from smolbox.core.state_manager import AUTORESOLVE, resolve
-from smolbox.core.tools import BaseTool
+from smolbox.core.tool_manager import BaseTool
 from torch.nn.utils import prune
 
 

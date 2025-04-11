@@ -14,7 +14,7 @@ import fire
 import torch
 from transformers import AutoModel, AutoTokenizer
 from smolbox.core.state_manager import AUTORESOLVE, resolve
-from smolbox.core.tools import BaseTool
+from smolbox.core.tool_manager import BaseTool
 
 
 class ModelParamEditor(BaseTool):

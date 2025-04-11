@@ -12,7 +12,7 @@ import os
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import torch
 from smolbox.core.state_manager import resolve, AUTORESOLVE
-from smolbox.core.tools import BaseTool
+from smolbox.core.tool_manager import BaseTool
 import fire
 
 

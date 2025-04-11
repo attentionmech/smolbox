@@ -15,7 +15,7 @@ import torch
 from transformers import AutoConfig, AutoModel, AutoTokenizer
 
 from smolbox.core.state_manager import AUTORESOLVE, resolve
-from smolbox.core.tools import BaseTool
+from smolbox.core.tool_manager import BaseTool
 
 
 class ModelFromConfigInitializer(BaseTool):

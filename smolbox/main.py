@@ -13,7 +13,7 @@ from smolbox.core.state_manager import (
     list_models,
 )
 
-from smolbox.core.tools import exec_tool, INTERNAL_COMMANDS
+from smolbox.core.tool_manager import exec_tool, INTERNAL_COMMANDS
 from smolbox.config import DEFAULT_TOOLS_DIR
 
 
