@@ -63,7 +63,7 @@ class MAVRunner(BaseTool):
     def run(self):
         print(f"Running MAV with model: {self.model}")
         mav_instance = MAV(
-            model=self.model,
+            model=self.model_path,
             prompt=self.prompt,
             max_new_tokens=self.max_new_tokens,
             limit_chars=self.limit_chars,
