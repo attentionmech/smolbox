@@ -8,6 +8,8 @@
 # ]
 # ///
 
+#  lesswrong post about this logitlens technique which we are using nnsight library for: https://www.lesswrong.com/posts/AcKRB8wDpdaN6v6ru/interpreting-gpt-the-logit-lens
+
 import os
 import sys
 import time
