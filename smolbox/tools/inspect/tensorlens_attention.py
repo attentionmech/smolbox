@@ -24,6 +24,7 @@ class AttentionTensorLens(BaseTool):
         model_path=AUTORESOLVE,
         prompt="Once upon a time " * 20,
         max_new_tokens=1,
+        notebook=False,
         host="localhost",
         port=8000,
     ):
@@ -32,6 +33,7 @@ class AttentionTensorLens(BaseTool):
         self.max_new_tokens = int(max_new_tokens)
         self.host = host
         self.port = port
+        self.notebook = notebook
 
     def run(self):
         # Load tokenizer and model
@@ -83,7 +85,7 @@ class AttentionTensorLens(BaseTool):
                 trace(f"attn_gen_layer{layer_idx}_head{head_idx}", attn_matrix)
 
         # Launch viewer
-        viewer(height="100%", port=self.port, host=self.host)
+        viewer(height="100%", port=self.port, host=self.host, notebook=self.notebook)
         return True
 
 

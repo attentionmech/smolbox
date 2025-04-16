@@ -26,12 +26,14 @@ class TensorLensActivations(BaseTool):
         max_new_tokens=1,  # Generate only 1 new token
         host="localhost",
         port=8000,
+        notebook=False,
     ):
         self.model_path = resolve("model_path", model_path)
         self.text_input = prompt
         self.max_new_tokens = int(max_new_tokens)
         self.host = host
         self.port = port
+        self.notebook = notebook
 
     def run(self):
         # Load tokenizer and model
@@ -79,7 +81,7 @@ class TensorLensActivations(BaseTool):
             for layer_idx, hidden in enumerate(layer_outputs):
                 trace(f"layer_{layer_idx}_step_gen_{step_idx}", hidden.detach().cpu().numpy())
 
-        viewer(height="100%", port=self.port, host=self.host)
+        viewer(height="100%", port=self.port, host=self.host, notebook=self.notebook)
         return True
 
 

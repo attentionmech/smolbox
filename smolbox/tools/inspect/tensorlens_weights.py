@@ -23,8 +23,14 @@ class TensorLensWeights(BaseTool):
     def __init__(
         self,
         model_path=AUTORESOLVE,
+        notebook=False,
+        host="localhost",
+        port=8000,
     ):
         self.model_path = resolve("model_path", model_path)
+        self.notebook = notebook
+        self.host = host
+        self.port = port
 
     def run(self):
         
@@ -35,7 +41,7 @@ class TensorLensWeights(BaseTool):
 
         [trace(key, tensor.detach().cpu().numpy()) for key, tensor in model.state_dict().items()]
 
-        viewer(height='100%', port=8000)
+        viewer(height='100%', host=self.host, port=self.port, notebook=self.notebook)
 
         return True
 
