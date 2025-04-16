@@ -24,10 +24,14 @@ class TensorLensActivations(BaseTool):
         model_path=AUTORESOLVE,
         prompt="Once upon a time "*10,
         max_new_tokens=1,  # Generate only 1 new token
+        host="localhost",
+        port=8000,
     ):
         self.model_path = resolve("model_path", model_path)
         self.text_input = prompt
         self.max_new_tokens = int(max_new_tokens)
+        self.host = host
+        self.port = port
 
     def run(self):
         # Load tokenizer and model
@@ -75,7 +79,7 @@ class TensorLensActivations(BaseTool):
             for layer_idx, hidden in enumerate(layer_outputs):
                 trace(f"layer_{layer_idx}_step_gen_{step_idx}", hidden.detach().cpu().numpy())
 
-        viewer(height="100%", port=8000)
+        viewer(height="100%", port=self.port, host=self.host)
         return True
 
 
